@@ -152,7 +152,6 @@ void main()
     WPUbits.WPU4 = 1;
     IOCbits.IOC4 = 1;           // IOC on the button input pin (GP4)
     GP2 = 0;
-    OUTPUT_PIN = 0;
     TRISIObits.TRISIO2 = 0;     // LED output pin direction
     TRISIObits.TRISIO5 = 0;     // Switch output pin direction
 
@@ -178,6 +177,8 @@ void main()
     GPIE = 1;
     IOC4 = 1;
     GPIF = 0;
+
+    Output_turnOff();
 
     while (1)
     {
@@ -360,14 +361,17 @@ static void Output_task()
 
 static void Output_turnOff()
 {
-    OUTPUT_PIN = 0;
+    OUTPUT_PIN = 1;
+    TRISIObits.TRISIO5 = 1; // Open-drain
+
     TMR1ON = 0;
     output.on = false;
 }
 
 static void Output_turnOn(const uint16_t seconds)
 {
-    OUTPUT_PIN = 1;
+    OUTPUT_PIN = 0;
+    TRISIObits.TRISIO5 = 0;
 
     output.timer = seconds;
     output.on = true;
